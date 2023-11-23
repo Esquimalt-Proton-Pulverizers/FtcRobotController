@@ -3,88 +3,71 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
-import com.qualcomm.robotcore.hardware.DigitalChannel;
-import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Gyroscope;
-import com.qualcomm.robotcore.hardware.HardwareMap;
-import com.qualcomm.robotcore.hardware.Servo;
-
-import org.checkerframework.checker.initialization.qual.Initialized;
 
 @TeleOp
 
 public class MyFIRSTJavaOpMode extends LinearOpMode {
 
     private Gyroscope imu;
-    private DcMotor testMotorLeft, testMotorRight, testMotorForward, testMotorBackward;
+    private DcMotor frontLeft, frontRight, backRight, backLeft;
 
     @Override
     public void runOpMode() {
 
         imu = hardwareMap.get(Gyroscope.class, "imu");
-        testMotorLeft = hardwareMap.get(DcMotor.class, "testMotorLeft");
-        testMotorRight = hardwareMap.get(DcMotor.class, "testMotorRight");
-        testMotorForward = hardwareMap.get(DcMotor.class, "testMotorForward");
-        testMotorBackward = hardwareMap.get(DcMotor.class, "testMotorBackward");
-        testMotorLeft.setDirection(DcMotorSimple.Direction.REVERSE);
-        testMotorBackward.setDirection(DcMotorSimple.Direction.REVERSE);
+
+        frontLeft = hardwareMap.get(DcMotor.class, "frontLeft");
+        frontRight = hardwareMap.get(DcMotor.class, "frontRight");
+        backRight = hardwareMap.get(DcMotor.class, "backRight");
+        backLeft = hardwareMap.get(DcMotor.class, "backLeft");
+
+        frontLeft.setDirection(DcMotorSimple.Direction.FORWARD);
+        frontRight.setDirection(DcMotorSimple.Direction.REVERSE);
+        backRight.setDirection(DcMotorSimple.Direction.REVERSE);
+        backLeft.setDirection(DcMotorSimple.Direction.FORWARD);
 
         telemetry.addData("Status", "Initialized");
         telemetry.update();
+
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
 
         // run until the end of the match (driver presses STOP)
-        double targetPowerForward = 0;
-        double targetPowerSide = 0;
-        double targetPowerRotation = 0;
+        double forward = 0;
+        double strafe = 0;
+        double rotation = 0;
 
         while (opModeIsActive()) {
             //TODO: Make robot drive
-            targetPowerForward = gamepad1.left_stick_y;
-            targetPowerSide = gamepad1.left_stick_x;
-            targetPowerRotation = gamepad1.right_stick_x;
+            forward = -gamepad1.left_stick_y;
+            strafe = gamepad1.left_stick_x;
+            rotation = gamepad1.right_stick_x;
             telemetry.addData("Status of OpMode: ", "Running");
 
-//            testMotor.setPower(targetPowerForward);
-//            telemetry.addData("Target Power: ", targetPowerForward);
+//            testMotor.setPower(forward);
+//            telemetry.addData("Target Power: ", forward);
 //            telemetry.addData("Motor Power: ", testMotor.getPower());
             telemetry.addData("Left Stick", gamepad1.left_stick_x);
 
-            testMotorLeft.setPower(targetPowerForward - targetPowerRotation);
-            testMotorRight.setPower(targetPowerForward + targetPowerRotation);
-            testMotorForward.setPower(targetPowerSide + targetPowerRotation);
-            testMotorBackward.setPower(targetPowerSide - targetPowerRotation);
+//            leftMotor.setPower(forward - rotation);
+//            rightMotor.setPower(forward + rotation);
+//            forwardMotor.setPower(strafe + rotation);
+//            backMotor.setPower(strafe - rotation);
 
-//            if (targetPowerRotation != 0 && targetPowerRotation > 0.1d)
-//            {
-//                testMotorLeft.setPower(targetPowerRotation);
-//                testMotorForward.setPower(targetPowerRotation);
-//
-//                testMotorRight.setDirection(DcMotorSimple.Direction.REVERSE);
-//                testMotorBackward.setDirection(DcMotorSimple.Direction.REVERSE);
-//
-//                testMotorRight.setPower(targetPowerRotation/2);
-//                testMotorBackward.setPower(targetPowerRotation/2);
-//            }
-//
-//            else if (targetPowerRotation != 0 && targetPowerRotation < 0.1d)
-//            {
-//                testMotorLeft.setPower(targetPowerRotation/2);
-//                testMotorForward.setPower(targetPowerRotation/2);
-//
-//                testMotorRight.setDirection(DcMotorSimple.Direction.REVERSE);
-//                testMotorBackward.setDirection(DcMotorSimple.Direction.REVERSE);
-//
-//                testMotorRight.setPower(targetPowerRotation);
-//                testMotorBackward.setPower(targetPowerRotation);
-//            }
+            telemetry.addData("Front", forward);
+            telemetry.addData("Strafe", strafe);
+            telemetry.addData("Rotation", rotation);
+
+            frontLeft.setPower(forward + strafe + rotation);
+            frontRight.setPower(forward - strafe - rotation);
+            backRight.setPower(forward + strafe - rotation);
+            backLeft.setPower(forward - strafe + rotation);
+
 
             telemetry.update();
 
         }
-
-
     }
 }
