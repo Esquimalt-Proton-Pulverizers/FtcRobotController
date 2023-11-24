@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Gyroscope;
@@ -11,7 +12,7 @@ import com.qualcomm.robotcore.hardware.Gyroscope;
 public class MyFIRSTJavaOpMode extends LinearOpMode {
 
     private Gyroscope imu;
-    private DcMotor frontLeft, frontRight, backRight, backLeft;
+    private DcMotor frontLeft, frontRight, backRight, backLeft, armLifter;
 
     @Override
     public void runOpMode() {
@@ -22,6 +23,7 @@ public class MyFIRSTJavaOpMode extends LinearOpMode {
         frontRight = hardwareMap.get(DcMotor.class, "frontRight");
         backRight = hardwareMap.get(DcMotor.class, "backRight");
         backLeft = hardwareMap.get(DcMotor.class, "backLeft");
+        armLifter = hardwareMap.get(DcMotorEx.class, "armLifter");
 
         frontLeft.setDirection(DcMotorSimple.Direction.FORWARD);
         frontRight.setDirection(DcMotorSimple.Direction.REVERSE);
@@ -38,12 +40,16 @@ public class MyFIRSTJavaOpMode extends LinearOpMode {
         double forward = 0;
         double strafe = 0;
         double rotation = 0;
+        double lift = 0;
+        double upperStop = 10;
+        double downStop = -10;
 
         while (opModeIsActive()) {
             //TODO: Make robot drive
             forward = -gamepad1.left_stick_y;
             strafe = gamepad1.left_stick_x;
             rotation = gamepad1.right_stick_x;
+            lift = gamepad1.right_trigger - gamepad1.left_trigger;
             telemetry.addData("Status of OpMode: ", "Running");
 
 //            testMotor.setPower(forward);
@@ -65,6 +71,10 @@ public class MyFIRSTJavaOpMode extends LinearOpMode {
             backRight.setPower(forward + strafe - rotation);
             backLeft.setPower(forward - strafe + rotation);
 
+            if (lift < upperStop || lift >  downStop)
+            {
+                armLifter.setPower(lift);
+            }
 
             telemetry.update();
 
