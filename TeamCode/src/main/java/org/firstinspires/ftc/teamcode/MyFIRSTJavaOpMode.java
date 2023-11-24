@@ -71,7 +71,7 @@ public class MyFIRSTJavaOpMode extends LinearOpMode {
             backRight.setPower(forward + strafe - rotation);
             backLeft.setPower(forward - strafe + rotation);
 
-            if (lift < upperStop || lift >  downStop)
+            if (lift <= upperStop || lift >=  downStop)
             {
                 armLifter.setPower(lift);
             }
