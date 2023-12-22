@@ -16,6 +16,11 @@ public class DriveBaseSubSystem {
         backRight = new Motor(hardwareMap, "backRight");
         backLeft = new Motor(hardwareMap, "backLeft");
 
+        frontLeft.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
+        frontRight.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
+        backLeft.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
+        backRight.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
+
         frontLeft.encoder.setDirection(Motor.Direction.FORWARD);
         frontRight.encoder.setDirection(Motor.Direction.REVERSE);
         backRight.encoder.setDirection(Motor.Direction.REVERSE);
@@ -27,7 +32,7 @@ public class DriveBaseSubSystem {
     }
 
     public void drive(double forward, double strafe, double turn) {
-        hDrive.driveFieldCentric(strafe, forward, turn, imu.getRotation2d().getDegrees());
+        hDrive.driveRobotCentric(strafe, forward, turn);
     }
 
     public void stop() {

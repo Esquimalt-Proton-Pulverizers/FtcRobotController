@@ -19,6 +19,7 @@ public class MainOpMode extends LinearOpMode {
     public void runOpMode() {
 
         armLifter = hardwareMap.get(DcMotorEx.class, "armLifter");
+        armLifter.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         driveBase = new DriveBaseSubSystem(hardwareMap);
 
@@ -41,7 +42,7 @@ public class MainOpMode extends LinearOpMode {
             forward = -gamepad1.left_stick_y;
             strafe = gamepad1.left_stick_x;
             rotation = gamepad1.right_stick_x;
-            lift = gamepad1.right_trigger - gamepad1.left_trigger;
+//            lift = gamepad1.right_trigger - gamepad1.left_trigger;
 
             telemetry.addData("Status of OpMode: ", "Running");
 
@@ -54,12 +55,20 @@ public class MainOpMode extends LinearOpMode {
             telemetry.addData("Front", forward);
             telemetry.addData("Strafe", strafe);
             telemetry.addData("Rotation", rotation);
+            telemetry.addData("Left bumber: ", gamepad1.left_bumper);
 
             driveBase.drive(forward, strafe, rotation);
 
-            if (lift <= upperStop || lift >=  downStop)
-            {
-                armLifter.setPower(lift/64);
+            // If we pressed the left bumper, lift the arm.
+            if (gamepad2.left_bumper) {
+                armLifter.setPower(0.4);
+            }
+            else if (gamepad2.right_bumper) {
+                armLifter.setPower(-0.2);
+            }
+            else {
+                armLifter.setPower(0);
+
             }
 
             telemetry.update();
